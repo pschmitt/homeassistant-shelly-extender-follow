@@ -6,12 +6,12 @@
         "description": "Keep a roaming Shelly's config entry in sync with wherever it is reachable — directly on the main network, or behind another Shelly acting as a WiFi range extender.",
         "menu_options": {
           "manual": "Add a single Shelly",
-          "discover": "Discover and add all Shellys"
+          "discover": "Discover and add all Shellies"
         }
       },
       "manual": {
         "title": "Add a single Shelly",
-        "description": "Pick the roaming Shelly to keep in sync. The extender is optional — leave it blank to auto-detect which Shelly is currently extending this device (all other Shellys are scanned when it is not directly reachable).",
+        "description": "Pick the roaming Shelly to keep in sync. The extender is optional — leave it blank to auto-detect which Shelly is currently extending this device (all other Shellies are scanned when it is not directly reachable).",
         "data": {
           "client_entry_id": "Client Shelly (the device to keep in sync)",
           "client_direct_host": "Client direct host (mDNS name reachable on the main network, e.g. shelly-xxx.lan)",
@@ -19,7 +19,7 @@
         }
       },
       "discover": {
-        "title": "Discover Shellys",
+        "title": "Discover Shellies",
         "description": "Select the Shelly devices to follow. Each one's direct host defaults to its current address. Leave the extender blank to auto-detect it per device (recommended); or pin a shared extender host for all selected devices. You can fine-tune any of them afterwards.",
         "data": {
           "selected_clients": "Shelly devices to add",

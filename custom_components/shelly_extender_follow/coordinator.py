@@ -74,7 +74,7 @@ class ShellyExtenderFollowCoordinator(DataUpdateCoordinator[ShellyLink]):
             CONF_FOLLOW_ENABLED, DEFAULT_FOLLOW_ENABLED
         )
         # In auto mode (no extender configured), the extender we last found the
-        # client behind — probed first before rescanning all Shellys.
+        # client behind — probed first before rescanning all Shellies.
         self._last_extender_host: str | None = None
 
     @property
@@ -136,7 +136,7 @@ class ShellyExtenderFollowCoordinator(DataUpdateCoordinator[ShellyLink]):
         # Auto mode (no extender configured): search every other Shelly's
         # AP-client table to find whichever one is currently extending us.
         # Try the last extender we found first (cheap), then scan the rest
-        # concurrently. Non-extender Shellys just return an empty list.
+        # concurrently. Non-extender Shellies just return an empty list.
         if self._last_extender_host:
             link = await self._find_on_extender(
                 self._last_extender_host, client_mac

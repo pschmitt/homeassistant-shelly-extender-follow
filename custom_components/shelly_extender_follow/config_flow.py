@@ -110,7 +110,7 @@ class ShellyExtenderFollowConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_discover(
         self, user_input: dict | None = None
     ) -> ConfigFlowResult:
-        """Bulk-add follow entries for many Shellys at once.
+        """Bulk-add follow entries for many Shellies at once.
 
         The direct host defaults to each Shelly entry's current host; an
         optional shared extender host applies to all of them. Fine-tune any

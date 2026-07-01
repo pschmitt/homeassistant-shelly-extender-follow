@@ -25,7 +25,7 @@ Every poll it:
 2. Otherwise finds it behind an extender via `WiFi.ListAPClients`, matching the
    client's MAC and reading the forwarded port (`mport`). If a specific
    extender host was configured, only that one is queried; otherwise **all
-   other Shellys are scanned** to auto-detect whichever one is currently
+   other Shellies are scanned** to auto-detect whichever one is currently
    extending the device (the last match is remembered and tried first).
 3. If the reachable endpoint differs from the client entry's current
    host+port, it updates the entry **and reloads it** (Shelly does not reload
@@ -44,7 +44,7 @@ Add the integration from the UI. You can either:
 - **Add a single Shelly** — pick the `shelly` config entry, its direct host
   (mDNS name, e.g. `shelly-master-bathroom-ventilation.lan`), and optionally an
   extender host. Leave the extender blank to auto-detect it.
-- **Discover and add all Shellys** — multi-select every un-followed Shelly at
+- **Discover and add all Shellies** — multi-select every un-followed Shelly at
   once; each one's direct host defaults to its current address and the extender
   is auto-detected (or you can pin a shared one).
 
