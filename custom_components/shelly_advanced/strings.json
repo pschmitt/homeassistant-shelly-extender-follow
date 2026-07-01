@@ -60,7 +60,7 @@
     },
     "switch": {
       "follow_enabled": {
-        "name": "Auto-follow"
+        "name": "Auto-reconfigure"
       },
       "eco_mode": {
         "name": "Eco mode"

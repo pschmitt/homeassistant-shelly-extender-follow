@@ -94,10 +94,19 @@ class ShellyAdvancedConfigFlow(ConfigFlow, domain=DOMAIN):
                         },
                     )
 
+        # A config_entry selector is not rendered by the HA frontend, so build
+        # a plain dropdown of the un-followed Shelly entries instead.
+        options = [
+            selector.SelectOptionDict(value=entry.entry_id, label=entry.title)
+            for entry in self._unfollowed_shellies()
+        ]
         schema = vol.Schema(
             {
-                vol.Required(CONF_CLIENT_ENTRY_ID): selector.ConfigEntrySelector(
-                    selector.ConfigEntrySelectorConfig(integration=SHELLY_DOMAIN)
+                vol.Required(CONF_CLIENT_ENTRY_ID): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=options,
+                        mode=selector.SelectSelectorMode.DROPDOWN,
+                    )
                 ),
                 vol.Required(CONF_CLIENT_DIRECT_HOST): str,
                 vol.Optional(CONF_EXTENDER_HOST, default=""): str,
