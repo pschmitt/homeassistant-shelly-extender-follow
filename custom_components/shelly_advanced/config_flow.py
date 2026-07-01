@@ -16,6 +16,7 @@ from homeassistant.config_entries import (
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 from homeassistant.helpers import selector
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 
 from .api import ShellyRpc
 from .const import (
@@ -32,11 +33,31 @@ from .const import (
     SHELLY_DOMAIN,
 )
 
+_HEX = set("0123456789abcdef")
+
+
+def _normalize_mac(mac: str | None) -> str:
+    """Reduce any MAC representation to lowercase hex with no separators."""
+    return "".join(c for c in (mac or "").lower() if c in _HEX)
+
+
+def _mac_from_zeroconf_name(name: str) -> str:
+    """Extract the 12-hex MAC from a Shelly mDNS name (``model-<mac>._shelly…``)."""
+    label = name.split(".")[0]
+    tail = label.rsplit("-", 1)[-1].lower()
+    return tail if len(tail) == 12 and set(tail) <= _HEX else ""
+
 
 class ShellyAdvancedConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle the initial setup."""
 
     VERSION = 1
+
+    def __init__(self) -> None:
+        """Initialize discovery state."""
+        self._discovered_client_id: str | None = None
+        self._discovered_host: str | None = None
+        self._discovered_title: str | None = None
 
     def _followed_client_ids(self) -> set[str]:
         """Return client entry ids already covered by an existing follow entry."""
@@ -60,6 +81,65 @@ class ShellyAdvancedConfigFlow(ConfigFlow, domain=DOMAIN):
         """Offer manual (single) or bulk discovery."""
         return self.async_show_menu(
             step_id="user", menu_options=["manual", "discover"]
+        )
+
+    def _shelly_entry_for_mac(self, mac: str) -> ConfigEntry | None:
+        """Return the `shelly` config entry whose MAC matches, if any."""
+        return next(
+            (
+                entry
+                for entry in self.hass.config_entries.async_entries(SHELLY_DOMAIN)
+                if _normalize_mac(entry.unique_id) == mac
+            ),
+            None,
+        )
+
+    async def async_step_zeroconf(
+        self, discovery_info: ZeroconfServiceInfo
+    ) -> ConfigFlowResult:
+        """Surface a Shelly found on the network as a discovered device.
+
+        We follow an existing `shelly` config entry, so match the advertised
+        MAC to one; if none exists (HA doesn't manage this Shelly) there is
+        nothing for us to follow.
+        """
+        mac = _mac_from_zeroconf_name(discovery_info.name)
+        if not mac:
+            return self.async_abort(reason="no_mac")
+        client = self._shelly_entry_for_mac(mac)
+        if client is None:
+            return self.async_abort(reason="no_shelly_entry")
+
+        await self.async_set_unique_id(client.entry_id)
+        self._abort_if_unique_id_configured()
+
+        self._discovered_client_id = client.entry_id
+        self._discovered_host = client.data.get(CONF_HOST) or discovery_info.host
+        self._discovered_title = client.title
+        self.context["title_placeholders"] = {"name": client.title}
+        return await self.async_step_discovery_confirm()
+
+    async def async_step_discovery_confirm(
+        self, user_input: dict | None = None
+    ) -> ConfigFlowResult:
+        """Confirm adding a discovered Shelly (extender auto-detected)."""
+        if user_input is not None:
+            return self.async_create_entry(
+                title=f"Follow: {self._discovered_title}",
+                data={
+                    CONF_CLIENT_ENTRY_ID: self._discovered_client_id,
+                    CONF_CLIENT_DIRECT_HOST: self._discovered_host,
+                    CONF_EXTENDER_HOST: (
+                        user_input.get(CONF_EXTENDER_HOST) or ""
+                    ).strip(),
+                },
+            )
+        return self.async_show_form(
+            step_id="discovery_confirm",
+            description_placeholders={"name": self._discovered_title},
+            data_schema=vol.Schema(
+                {vol.Optional(CONF_EXTENDER_HOST, default=""): str}
+            ),
         )
 
     async def async_step_manual(

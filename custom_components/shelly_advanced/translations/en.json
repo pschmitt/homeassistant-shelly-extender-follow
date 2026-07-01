@@ -25,15 +25,25 @@
           "selected_clients": "Shelly devices to add",
           "extender_host": "Shared extender host (optional — blank = auto-detect)"
         }
+      },
+      "discovery_confirm": {
+        "title": "Shelly Advanced",
+        "description": "Follow **{name}** with Shelly Advanced? The extender is auto-detected — optionally pin a specific one below.",
+        "data": {
+          "extender_host": "Extender host (optional — blank = auto-detect)"
+        }
       }
     },
+    "flow_title": "{name}",
     "error": {
       "invalid_client": "That config entry is not a usable Shelly device (no MAC / unique id).",
       "cannot_connect_extender": "Could not reach the extender Shelly's WiFi.ListAPClients endpoint."
     },
     "abort": {
       "already_configured": "This client Shelly is already being followed.",
-      "no_new_shellies": "All Shelly devices are already being followed."
+      "no_new_shellies": "All Shelly devices are already being followed.",
+      "no_mac": "Could not determine the Shelly's MAC address from discovery.",
+      "no_shelly_entry": "This Shelly is not set up in the Shelly integration yet, so there is nothing to follow."
     }
   },
   "options": {

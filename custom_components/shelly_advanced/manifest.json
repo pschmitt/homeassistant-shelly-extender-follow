@@ -8,5 +8,6 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/pschmitt/homeassistant-shelly-advanced/issues",
   "loggers": ["custom_components.shelly_advanced"],
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "zeroconf": ["_shelly._tcp.local."]
 }
