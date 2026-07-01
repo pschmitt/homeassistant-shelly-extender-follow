@@ -122,24 +122,24 @@ class ShellyAdvancedConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_discovery_confirm(
         self, user_input: dict | None = None
     ) -> ConfigFlowResult:
-        """Confirm adding a discovered Shelly (extender auto-detected)."""
+        """One-click confirm for a discovered Shelly.
+
+        No prompts: the direct host is inferred from the Shelly entry and the
+        extender is auto-detected if the device ever roams.
+        """
         if user_input is not None:
             return self.async_create_entry(
                 title=f"Follow: {self._discovered_title}",
                 data={
                     CONF_CLIENT_ENTRY_ID: self._discovered_client_id,
                     CONF_CLIENT_DIRECT_HOST: self._discovered_host,
-                    CONF_EXTENDER_HOST: (
-                        user_input.get(CONF_EXTENDER_HOST) or ""
-                    ).strip(),
+                    CONF_EXTENDER_HOST: "",
                 },
             )
         return self.async_show_form(
             step_id="discovery_confirm",
             description_placeholders={"name": self._discovered_title},
-            data_schema=vol.Schema(
-                {vol.Optional(CONF_EXTENDER_HOST, default=""): str}
-            ),
+            data_schema=vol.Schema({}),
         )
 
     async def async_step_manual(
@@ -167,9 +167,9 @@ class ShellyAdvancedConfigFlow(ConfigFlow, domain=DOMAIN):
                         title=f"Follow: {client.title}",
                         data={
                             CONF_CLIENT_ENTRY_ID: client_entry_id,
-                            CONF_CLIENT_DIRECT_HOST: user_input[
-                                CONF_CLIENT_DIRECT_HOST
-                            ],
+                            # Inferred from the Shelly entry — no need to ask.
+                            CONF_CLIENT_DIRECT_HOST: client.data.get(CONF_HOST)
+                            or "",
                             CONF_EXTENDER_HOST: extender,
                         },
                     )
@@ -188,7 +188,6 @@ class ShellyAdvancedConfigFlow(ConfigFlow, domain=DOMAIN):
                         mode=selector.SelectSelectorMode.DROPDOWN,
                     )
                 ),
-                vol.Required(CONF_CLIENT_DIRECT_HOST): str,
                 vol.Optional(CONF_EXTENDER_HOST, default=""): str,
             }
         )

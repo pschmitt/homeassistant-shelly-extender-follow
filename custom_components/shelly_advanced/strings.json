@@ -11,11 +11,10 @@
       },
       "manual": {
         "title": "Add a single Shelly",
-        "description": "Pick the roaming Shelly to keep in sync. The extender is optional — leave it blank to auto-detect which Shelly is currently extending this device (all other Shellies are scanned when it is not directly reachable).",
+        "description": "Pick the Shelly to manage. Its address is taken from the Shelly integration. The extender is optional — leave it blank to auto-detect it (all other Shellies are scanned when the device is not directly reachable).",
         "data": {
-          "client_entry_id": "Client Shelly (the device to keep in sync)",
-          "client_direct_host": "Client direct host (mDNS name reachable on the main network, e.g. shelly-xxx.lan)",
-          "extender_host": "Extender host (optional — leave blank to auto-detect the extender, or pin a specific one e.g. shelly-yyy.lan)"
+          "client_entry_id": "Shelly device",
+          "extender_host": "Extender host (optional — blank = auto-detect, or pin one e.g. shelly-yyy.lan)"
         }
       },
       "discover": {
@@ -28,10 +27,7 @@
       },
       "discovery_confirm": {
         "title": "Shelly Advanced",
-        "description": "Follow **{name}** with Shelly Advanced? The extender is auto-detected — optionally pin a specific one below.",
-        "data": {
-          "extender_host": "Extender host (optional — blank = auto-detect)"
-        }
+        "description": "Add **{name}** to Shelly Advanced? Its address is taken from the Shelly integration, and the extender is auto-detected if it ever roams."
       }
     },
     "flow_title": "{name}",
