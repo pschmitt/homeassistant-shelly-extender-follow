@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Shelly Extender Follow",
+        "description": "Keep a roaming Shelly's config entry in sync with wherever it is reachable — directly on the main network, or behind another Shelly acting as a WiFi range extender.",
+        "data": {
+          "client_entry_id": "Client Shelly (the roaming device to keep in sync)",
+          "client_direct_host": "Client direct host (mDNS name reachable on the main network, e.g. shelly-xxx.lan)",
+          "extender_host": "Extender host (the Shelly acting as WiFi range extender, e.g. shelly-yyy.lan)"
+        }
+      }
+    },
+    "error": {
+      "invalid_client": "That config entry is not a usable Shelly device (no MAC / unique id).",
+      "cannot_connect_extender": "Could not reach the extender Shelly's WiFi.ListAPClients endpoint."
+    },
+    "abort": {
+      "already_configured": "This client Shelly is already being followed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Shelly Extender Follow options",
+        "data": {
+          "scan_interval": "Poll interval (seconds)",
+          "direct_port": "Direct HTTP port (usually 80)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "link": {
+        "name": "Link",
+        "state": {
+          "direct": "Direct",
+          "extender": "Via extender",
+          "unreachable": "Unreachable"
+        }
+      }
+    }
+  }
+}
